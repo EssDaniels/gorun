@@ -24,7 +24,8 @@
         <div class="form-group">
             <label for="phone">Numer telefonu:</label>
             <input type="tel" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}" id="phone"
-                name="phone" value="{{ old('phone') }}" required pattern="\d*" title="Tylko cyfry są akceptowane.">
+                name="phone" value="{{ old('phone') }}" required pattern="\d*" title="Tylko cyfry są akceptowane."
+                maxlength="16">
             @if ($errors->has('phone'))
                 <div class="invalid-feedback">{{ $errors->first('phone') }}</div>
             @endif
@@ -39,8 +40,11 @@
         </div>
         <div class="form-group">
             <label for="message">Treść wiadomości:</label>
-            <textarea class="form-control {{ $errors->has('message') ? 'is-invalid' : '' }}" id="message" name="message" required
-                maxlength="500">{{ old('message') }}</textarea>
+            <textarea rows="9" class="form-control {{ $errors->has('message') ? 'is-invalid' : '' }}" id="message"
+                name="message" required maxlength="500">{{ old('message') }}</textarea>
+            <div id="message-counter" class="text-muted">
+                0 / 500 znaków
+            </div>
             @if ($errors->has('message'))
                 <div class="invalid-feedback">{{ $errors->first('message') }}</div>
             @endif
