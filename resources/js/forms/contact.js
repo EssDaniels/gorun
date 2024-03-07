@@ -43,7 +43,7 @@ function validation() {
         }
     });
 
-    $('input[required], textarea[required]').on('blur', function () {
+    $('input[required]:not([type="file"]), textarea[required]').on('blur', function () {
         var isValid = true;
         var value = $(this).val();
         var isEmailField = $(this).is('#email');
@@ -60,6 +60,14 @@ function validation() {
         }
         if (isValid) {
             hideAlert($(this));
+        }
+    });
+
+    $('#attachment').on('change', function () {
+        if ($(this).val()) { // Sprawdza, czy jakikolwiek plik został wybrany
+            hideAlert($(this));
+        } else {
+            showAlertAndAddInvalidClass(REQUIRED_MSG, $(this));
         }
     });
 }
