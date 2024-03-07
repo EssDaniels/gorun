@@ -5,6 +5,7 @@ export default function contact() {
 }
 
 const REQUIRED_MSG = 'To pole jest wymagane.';
+const NAME_VALIDATION_MAX_CHAR_MSG = 'Imię i nazwisko nie może przekraczać 100 znaków.';
 const EMAIL_VALIDATION_MSG = 'Proszę wprowadzić poprawny adres e-mail.';
 const PHONE_VALIDATION_ONLY_NUMBER_MSG = 'Numer telefonu może zawierać tylko cyfry.';
 const PHONE_VALIDATION_MAX_NUMBER_MSG = 'Numer telefonu nie może przekraczać 15 cyfr.';
@@ -13,26 +14,32 @@ const ERROR_AJAX_MSG = 'Wystąpił błąd. Spróbuj ponownie.';
 
 function validation() {
 
+    $('#name').on('input', function () {
+        var name = $(this).val();
+        if (name.length > 100) {
+            showAlertAndAddInvalidClass(NAME_VALIDATION_MAX_CHAR_MSG, $(this));
+        } else {
+            hideAlert($(this));
+        }
+    });
+
     $('#phone').on('input', function () {
         var phone = $(this).val();
         if (!/^\d*$/.test(phone)) {
-            alert(PHONE_VALIDATION_ONLY_NUMBER_MSG);
-            $(this).addClass('is-invalid');
-        } else if (phone.length > 15) { // Dodana walidacja dla długości numeru telefonu
-            alert(PHONE_VALIDATION_MAX_NUMBER_MSG);
-            $(this).addClass('is-invalid');
+            showAlertAndAddInvalidClass(PHONE_VALIDATION_ONLY_NUMBER_MSG, $(this));
+        } else if (phone.length > 15) {
+            showAlertAndAddInvalidClass(PHONE_VALIDATION_MAX_NUMBER_MSG, $(this));
         } else {
-            $(this).removeClass('is-invalid');
+            hideAlert($(this));
         }
     });
 
     $('#phone').on('blur', function () {
         var phone = $(this).val();
         if (phone.length < 7) {
-            alert(PHONE_VALIDATION_MIN_NUMBER_MSG);
-            $(this).addClass('is-invalid');
+            showAlertAndAddInvalidClass(PHONE_VALIDATION_MIN_NUMBER_MSG, $(this));
         } else {
-            $(this).removeClass('is-invalid');
+            hideAlert($(this));
         }
     });
 
@@ -43,21 +50,36 @@ function validation() {
 
         if (!value) {
             isValid = false;
-            $(this).addClass('is-invalid');
-            $(this).siblings('.invalid-feedback').text(REQUIRED_MSG);
+            showAlertAndAddInvalidClass(REQUIRED_MSG, $(this));
         } else if (isEmailField) {
             var regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
             if (!regex.test(value)) {
                 isValid = false;
-                $(this).addClass('is-invalid');
-                $(this).siblings('.invalid-feedback').text(EMAIL_VALIDATION_MSG);
+                showAlertAndAddInvalidClass(EMAIL_VALIDATION_MSG, $(this));
             }
         }
-
         if (isValid) {
-            $(this).removeClass('is-invalid');
+            hideAlert($(this));
         }
     });
+}
+
+function showAlertAndAddInvalidClass(message, element) {
+
+    element.addClass('is-invalid');
+    var feedbackElement = element.siblings('.invalid-feedback');
+    if (feedbackElement.length) {
+        feedbackElement.text(message).show();
+    } else {
+        element.after('<div class="invalid-feedback">' + message + '</div>');
+    }
+}
+
+
+function hideAlert(element) {
+    element.removeClass('is-invalid');
+    var feedbackElement = element.siblings('.invalid-feedback');
+    if (feedbackElement.length) feedbackElement.hide();
 }
 
 function messageCounter() {
